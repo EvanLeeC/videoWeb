@@ -1,5 +1,7 @@
 package net.video.controller;
 
+import net.video.utils.SpringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -15,5 +17,16 @@ import org.springframework.context.annotation.Scope;
 public class BaseController {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
+    
+    /**
+	 * 获取国际化消息
+	 * 
+	 * @param code 代码
+	 * @param args 参数
+	 * @return 国际化消息
+	 */
+	protected String message(String code, Object... args) {
+		return SpringUtils.getMessage(code, args);
+	}
         
 }

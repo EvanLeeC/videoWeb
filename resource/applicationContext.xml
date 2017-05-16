@@ -11,7 +11,7 @@
     <!-- 自动扫描与装配bean -->
     <context:component-scan base-package="net.video"></context:component-scan>
 
-	<context:property-placeholder location="classpath*:/db.properties" ignore-resource-not-found="true" ignore-unresolvable="true" />
+	<context:property-placeholder location="classpath*:/videoweb.properties" ignore-resource-not-found="true" ignore-unresolvable="true" />
 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="${jdbc.driver}" />
@@ -63,4 +63,20 @@
 	</bean>
     <!-- 事务管理器 -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
+  
+  
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="cacheSeconds" value="${message.cache_seconds}" />
+        <property name="useCodeAsDefaultMessage" value="true" />
+        <property name="basenames">
+            <list>
+                <value>${message.web_path}</value>
+                <value>${message.admin_path}</value>
+            </list>
+        </property>
+    </bean>
+  
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+      <property name="defaultLocale" value="${locale}" />
+    </bean>
 </beans>
