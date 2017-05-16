@@ -16,7 +16,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(value = "prototype")
 public class BaseController {
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
     
     /**
 	 * 获取国际化消息

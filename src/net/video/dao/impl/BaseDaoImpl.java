@@ -69,5 +69,15 @@ public abstract class BaseDaoImpl<T, ID extends Serializable> implements BaseDao
 	public void flush() {
 		entityManager.flush();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public ID getIdentifier(T entity) {
+		Assert.notNull(entity);
+		return (ID) entityManager.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(entity);
+	}
+
+	public boolean isManaged(T entity) {
+		return entityManager.contains(entity);
+	}
 
 }

@@ -58,4 +58,20 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * 同步数据
 	 */
 	void flush();
+	
+	/**
+	 * 获取实体对象ID
+	 * 
+	 * @param entity 实体对象
+	 * @return 实体对象ID
+	 */
+	ID getIdentifier(T entity);
+
+	/**
+	 * 判断是否为托管状态
+	 * 
+	 * @param entity 实体对象
+	 * @return 是否为托管状态
+	 */
+	boolean isManaged(T entity);
 }

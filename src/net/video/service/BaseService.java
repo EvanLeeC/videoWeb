@@ -33,7 +33,7 @@ public interface BaseService <T, ID extends Serializable>{
 	 * @param entity
 	 *            实体对象
 	 */
-	void save(T... entitys);
+	void save(@SuppressWarnings("unchecked") T... entitys);
 
 	/**
 	 * 更新实体对象
@@ -55,7 +55,7 @@ public interface BaseService <T, ID extends Serializable>{
 	 * 
 	 * @param ids ID
 	 */
-	void delete(ID... ids);
+	void delete(@SuppressWarnings("unchecked") ID... ids);
 
 	/**
 	 * 删除实体对象
@@ -63,5 +63,14 @@ public interface BaseService <T, ID extends Serializable>{
 	 * @param entity 实体对象
 	 */
 	void delete(T entity);
+	
+	/**
+	 * 更新实体对象
+	 * 
+	 * @param entity 实体对象
+	 * @param ignoreProperties 忽略属性
+	 * @return 实体对象
+	 */
+	T update(T entity, String... ignoreProperties);
 
 }

@@ -1,12 +1,16 @@
 package net.video.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -15,33 +19,18 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * <p>TODO 类描述</p>
+ * <p>管理员</p>
  *
  * @author  lxy
  * @version 3.0!
- * @date    2017年5月10日
+ * @date    2017年5月16日
  */
 @Entity
-@Table(name = "xx_member")
-@SequenceGenerator(name = "sequenceGenerator", sequenceName = "xx_member_sequence")
-public class Member extends BaseEntity {
+@Table(name = "xx_admin")
+@SequenceGenerator(name = "sequenceGenerator", sequenceName = "xx_admin_sequence")
+public class Admin extends BaseEntity{
 
-	private static final long serialVersionUID = 2842497396941884910L;
-
-	/**
-	 * 性别
-	 */
-	public enum Gender {
-
-		/** 女 */
-		female,
-		/** 男 */
-		male
-		
-	}
-
-	/** "用户名"Cookie名称 */
-	public static final String USERNAME_COOKIE_NAME = "username";
+	private static final long serialVersionUID = -6743132058499629050L;
 
 	/** 用户名 */
 	private String username;
@@ -52,8 +41,8 @@ public class Member extends BaseEntity {
 	/** E-mail */
 	private String email;
 
-	/** 积分 */
-	private Long point;
+	/** 姓名 */
+	private String name;
 
 	/** 是否启用 */
 	private Boolean isEnabled;
@@ -64,33 +53,18 @@ public class Member extends BaseEntity {
 	/** 连续登录失败次数 */
 	private Integer loginFailureCount;
 
-	/** 最后登录IP */
-	private String loginIp;
+	/** 锁定日期 */
+	private Date lockedDate;
 
 	/** 最后登录日期 */
 	private Date loginDate;
 
-	/** 姓名 */
-	private String name;
+	/** 最后登录IP */
+	private String loginIp;
 
-	/** 性别 */
-	private Gender gender;
-
-	/** 出生日期 */
-	private Date birth;
-
-	/** 地址 */
-	private String address;
-
-	/** 邮编 */
-	private String zipCode;
-
-	/** 电话 */
-	private String phone;
-
-	/** 手机 */
-	private String mobile;
-
+	/** 角色 */
+	private Set<Role> roles = new HashSet<Role>();
+	
 	/**
 	 * 获取用户名
 	 * 
@@ -98,6 +72,7 @@ public class Member extends BaseEntity {
 	 */
 	@NotEmpty(groups = Save.class)
 	@Pattern(regexp = "^[0-9a-z_A-Z\\u4e00-\\u9fa5]+$")
+	@Length(min = 2, max = 20)
 	@Column(nullable = false, updatable = false, unique = true, length = 100)
 	public String getUsername() {
 		return username;
@@ -106,8 +81,7 @@ public class Member extends BaseEntity {
 	/**
 	 * 设置用户名
 	 * 
-	 * @param username
-	 *            用户名
+	 * @param username 用户名
 	 */
 	public void setUsername(String username) {
 		this.username = username;
@@ -120,6 +94,7 @@ public class Member extends BaseEntity {
 	 */
 	@NotEmpty(groups = Save.class)
 	@Pattern(regexp = "^[^\\s&\"<>]+$")
+	@Length(min = 4, max = 20)
 	@Column(nullable = false)
 	public String getPassword() {
 		return password;
@@ -128,8 +103,7 @@ public class Member extends BaseEntity {
 	/**
 	 * 设置密码
 	 * 
-	 * @param password
-	 *            密码
+	 * @param password 密码
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -140,8 +114,10 @@ public class Member extends BaseEntity {
 	 * 
 	 * @return E-mail
 	 */
+	@NotEmpty
 	@Email
 	@Length(max = 200)
+	@Column(nullable = false)
 	public String getEmail() {
 		return email;
 	}
@@ -149,33 +125,29 @@ public class Member extends BaseEntity {
 	/**
 	 * 设置E-mail
 	 * 
-	 * @param email
-	 *            E-mail
+	 * @param email E-mail
 	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
 	/**
-	 * 获取积分
+	 * 获取姓名
 	 * 
-	 * @return 积分
+	 * @return 姓名
 	 */
-	@NotNull(groups = Save.class)
-	@Min(0)
-	@Column(nullable = false)
-	public Long getPoint() {
-		return point;
+	@Length(max = 200)
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * 设置积分
+	 * 设置姓名
 	 * 
-	 * @param point
-	 *            积分
+	 * @param name 姓名
 	 */
-	public void setPoint(Long point) {
-		this.point = point;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -240,22 +212,22 @@ public class Member extends BaseEntity {
 	}
 
 	/**
-	 * 获取最后登录IP
+	 * 获取锁定日期
 	 * 
-	 * @return 最后登录IP
+	 * @return 锁定日期
 	 */
-	public String getLoginIp() {
-		return loginIp;
+	public Date getLockedDate() {
+		return lockedDate;
 	}
 
 	/**
-	 * 设置最后登录IP
+	 * 设置锁定日期
 	 * 
-	 * @param loginIp
-	 *            最后登录IP
+	 * @param lockedDate
+	 *            锁定日期
 	 */
-	public void setLoginIp(String loginIp) {
-		this.loginIp = loginIp;
+	public void setLockedDate(Date lockedDate) {
+		this.lockedDate = lockedDate;
 	}
 
 	/**
@@ -278,141 +250,43 @@ public class Member extends BaseEntity {
 	}
 
 	/**
-	 * 获取姓名
+	 * 获取最后登录IP
 	 * 
-	 * @return 姓名
+	 * @return 最后登录IP
 	 */
-	@Length(max = 200)
-	public String getName() {
-		return name;
+	public String getLoginIp() {
+		return loginIp;
 	}
 
 	/**
-	 * 设置姓名
+	 * 设置最后登录IP
 	 * 
-	 * @param name
-	 *            姓名
+	 * @param loginIp
+	 *            最后登录IP
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setLoginIp(String loginIp) {
+		this.loginIp = loginIp;
 	}
 
 	/**
-	 * 获取性别
+	 * 获取角色
 	 * 
-	 * @return 性别
+	 * @return 角色
 	 */
-	public Gender getGender() {
-		return gender;
+	@NotEmpty
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "xx_admin_role")
+	public Set<Role> getRoles() {
+		return roles;
 	}
 
 	/**
-	 * 设置性别
+	 * 设置角色
 	 * 
-	 * @param gender
-	 *            性别
+	 * @param roles
+	 *            角色
 	 */
-	public void setGender(Gender gender) {
-		this.gender = gender;
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
-
-	/**
-	 * 获取出生日期
-	 * 
-	 * @return 出生日期
-	 */
-	public Date getBirth() {
-		return birth;
-	}
-
-	/**
-	 * 设置出生日期
-	 * 
-	 * @param birth
-	 *            出生日期
-	 */
-	public void setBirth(Date birth) {
-		this.birth = birth;
-	}
-
-	/**
-	 * 获取地址
-	 * 
-	 * @return 地址
-	 */
-	@Length(max = 200)
-	public String getAddress() {
-		return address;
-	}
-
-	/**
-	 * 设置地址
-	 * 
-	 * @param address
-	 *            地址
-	 */
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	/**
-	 * 获取邮编
-	 * 
-	 * @return 邮编
-	 */
-	@Length(max = 200)
-	public String getZipCode() {
-		return zipCode;
-	}
-
-	/**
-	 * 设置邮编
-	 * 
-	 * @param zipCode
-	 *            邮编
-	 */
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
-	}
-
-	/**
-	 * 获取电话
-	 * 
-	 * @return 电话
-	 */
-	@Length(max = 200)
-	public String getPhone() {
-		return phone;
-	}
-
-	/**
-	 * 设置电话
-	 * 
-	 * @param phone 电话
-	 */
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	/**
-	 * 获取手机
-	 * 
-	 * @return 手机
-	 */
-	@Length(max = 200)
-	@Column(updatable = false)
-	public String getMobile() {
-		return mobile;
-	}
-
-	/**
-	 * 设置手机
-	 * 
-	 * @param mobile
-	 *            手机
-	 */
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
 }
