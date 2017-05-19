@@ -31,10 +31,8 @@
     <!-- Shiro安全管理器 -->  
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">  
         <property name="realm" ref="authenticationRealm"></property>  
-        <property name="cacheManager" ref="cacheManager"></property>  
-    </bean> 
-
-
+        <property name="cacheManager" ref="shiroCacheManager"></property>  
+    </bean>
 
     <bean id="authenticationRealm" class="net.video.AuthenticationRealm">
       <property name="authorizationCacheName" value="authorization" />
